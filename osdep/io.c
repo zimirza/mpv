@@ -106,7 +106,7 @@ void mp_flush_wakeup_pipe(int pipe_end)
 {
 #ifndef _WIN32
     char buf[100];
-    (void)read(pipe_end, buf, sizeof(buf));
+    (void)!read(pipe_end, buf, sizeof(buf));
 #endif
 }
 

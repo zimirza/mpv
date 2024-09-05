@@ -269,7 +269,6 @@ flags_c = []
 link_flags = []
 
 test_flags = ['-Wdisabled-optimization',
-              '-Wempty-body',
               '-Wformat',
               '-Wimplicit-fallthrough',
               '-Wparentheses',

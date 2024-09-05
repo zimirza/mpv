@@ -329,7 +329,7 @@ static void enable_kx(bool enable)
     // shouldn't be relied on here either.
     if (isatty(tty_out)) {
         char *cmd = enable ? "\033=" : "\033>";
-        (void)write(tty_out, cmd, strlen(cmd));
+        (void)!write(tty_out, cmd, strlen(cmd));
     }
 }
 
@@ -403,7 +403,7 @@ static void stop_cont_sighandler(int signum)
 {
     int saved_errno = errno;
     char sig = signum == SIGCONT ? PIPE_CONT : PIPE_STOP;
-    (void)write(stop_cont_pipe[1], &sig, 1);
+    (void)!write(stop_cont_pipe[1], &sig, 1);
     errno = saved_errno;
 }
 
@@ -433,7 +433,7 @@ static void close_tty(void)
 static void quit_request_sighandler(int signum)
 {
     int saved_errno = errno;
-    (void)write(death_pipe[1], &(char){1}, 1);
+    (void)!write(death_pipe[1], &(char){1}, 1);
     errno = saved_errno;
 }
 
@@ -466,11 +466,11 @@ static MP_THREAD_VOID terminal_thread(void *ptr)
         }
         if (fds[1].revents & POLLIN) {
             int8_t c = -1;
-            (void)read(stop_cont_pipe[0], &c, 1);
+            (void)!read(stop_cont_pipe[0], &c, 1);
             if (c == PIPE_STOP) {
                 do_deactivate_getch2();
                 if (isatty(STDERR_FILENO)) {
-                    (void)write(STDERR_FILENO, TERM_ESC_RESTORE_CURSOR,
+                    (void)!write(STDERR_FILENO, TERM_ESC_RESTORE_CURSOR,
                                 sizeof(TERM_ESC_RESTORE_CURSOR) - 1);
                 }
                 // trying to reset SIGTSTP handler to default and raise it will
@@ -547,7 +547,7 @@ void terminal_uninit(void)
     setsigaction(SIGTTOU, SIG_DFL, 0, false);
 
     if (input_ctx) {
-        (void)write(death_pipe[1], &(char){0}, 1);
+        (void)!write(death_pipe[1], &(char){0}, 1);
         mp_thread_join(input_thread);
         close_sig_pipes();
         input_ctx = NULL;
