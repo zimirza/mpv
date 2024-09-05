@@ -153,7 +153,7 @@ static void vt_switcher_sighandler(int sig)
 {
     int saved_errno = errno;
     unsigned char event = sig == RELEASE_SIGNAL ? EVT_RELEASE : EVT_ACQUIRE;
-    (void)write(vt_switcher_pipe[1], &event, sizeof(event));
+    (void)!write(vt_switcher_pipe[1], &event, sizeof(event));
     errno = saved_errno;
 }
 
@@ -268,7 +268,7 @@ static bool vt_switcher_init(struct vt_switcher *s, struct mp_log *log)
 static void vt_switcher_interrupt_poll(struct vt_switcher *s)
 {
     unsigned char event = EVT_INTERRUPT;
-    (void)write(vt_switcher_pipe[1], &event, sizeof(event));
+    (void)!write(vt_switcher_pipe[1], &event, sizeof(event));
 }
 
 static void vt_switcher_destroy(struct vt_switcher *s)

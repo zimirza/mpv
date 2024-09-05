@@ -146,7 +146,7 @@ static void trigger_locked(struct mp_cancel *c)
         mp_cancel_trigger(sub);
 
     if (c->wakeup_pipe[1] >= 0)
-        (void)write(c->wakeup_pipe[1], &(char){0}, 1);
+        (void)!write(c->wakeup_pipe[1], &(char){0}, 1);
 
 #ifdef _WIN32
     if (c->win32_event)
